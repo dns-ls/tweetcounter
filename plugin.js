@@ -1,22 +1,37 @@
-// plugin.js
-
-// Function to count tweets
-// function countTweets() {
-//     const tweets = document.querySelectorAll('article');
-//     alert(`Number of tweets on this page: ${tweets.length}`);
-// }
-
-// // Run the countTweets function when the content script is loaded
-// countTweets();
+// crc function for hashing tweets to check for duplicates
+function crc32(str) {
+    let crc = 0xFFFFFFFF;
+    for (let i = 0; i < str.length; i++) {
+        let byte = str.charCodeAt(i);
+        crc ^= byte;
+        for (let j = 0; j < 8; j++) {
+            crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+        }
+    }
+    return (crc ^ 0xFFFFFFFF) >>> 0; // Unsigned 32-bit integer
+}
 
 // Set to store unique tweets
 const tweetSet = new Set();
 
+function crcTweets(tweets) {
+    const crcs = new Set();
+    tweets.forEach(tweet => crcs.add(crc32(tweet)));
+    return crcs;
+}
+
+// get the tweets
+function getTweets() {
+    const rawTweets = document.querySelectorAll('time');
+    const tweetAttr = new Set();
+    rawTweets.forEach(tweet => tweetAttr.add(tweet.getAttribute("datetime")));
+    return tweetAttr;
+}
+
 // Function to add tweets to the set and display the total count
-function addTweetsToSet() {
-    const tweets = document.querySelectorAll('article');
-    tweets.forEach(tweet => tweetSet.add(tweet.innerText));
-    displayTweetCount();
+function addTweetsToSet(tweets) {
+    tweets.forEach(id => tweetSet.add(id));
+    // console.log('Tweets added to set');
 }
 
 // Function to display the total tweet count on the side of the screen
@@ -39,8 +54,15 @@ function displayTweetCount() {
 }
 
 setInterval(() => {
-    addTweetsToSet();
-    displayTweetCount();
-}, 5000);
+    var a = new Set()
+    a = getTweets();
+    a = crcTweets(a);
+    addTweetsToSet(a)
+    displayTweetCount(); 
+    if (tweetSet.size > 200) {
+        alert("You have reached 200 tweets. Go touch some grass.");
+    }
+}, 1500);
 
-//fix shit, tweets nach id speichern
+
+// todo: permament storage of tweets count
