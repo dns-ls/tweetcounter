@@ -1,13 +1,13 @@
 // plugin.js
 
 // Function to count tweets
-function countTweets() {
-    const tweets = document.querySelectorAll('article');
-    alert(`Number of tweets on this page: ${tweets.length}`);
-}
+// function countTweets() {
+//     const tweets = document.querySelectorAll('article');
+//     alert(`Number of tweets on this page: ${tweets.length}`);
+// }
 
-// Run the countTweets function when the content script is loaded
-countTweets();
+// // Run the countTweets function when the content script is loaded
+// countTweets();
 
 // Set to store unique tweets
 const tweetSet = new Set();
@@ -29,9 +29,18 @@ function displayTweetCount() {
         tweetCountDiv.style.top = '10px';
         tweetCountDiv.style.right = '10px';
         tweetCountDiv.style.backgroundColor = 'white';
-        tweetCountDiv.style.border = '1px solid black';
+        tweetCountDiv.style.border = '10px solid red';
         tweetCountDiv.style.padding = '10px';
+        tweetCountDiv.style.color = 'red';
         document.body.appendChild(tweetCountDiv);
+        console.log('Tweet count div created');
     }
-    tweetCountDiv.innerText = `Total unique tweets: ${tweetSet.size}`;
+    tweetCountDiv.innerText = "Total unique tweets: " + tweetSet.size;
 }
+
+setInterval(() => {
+    addTweetsToSet();
+    displayTweetCount();
+}, 5000);
+
+//fix shit, tweets nach id speichern
