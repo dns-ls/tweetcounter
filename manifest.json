@@ -1,0 +1,27 @@
+{
+    "manifest_version": 2,
+    "name": "Tweet Counter",
+    "version": "1.0",
+    "description": "A Firefox plugin to count tweets.",
+    "icons": {
+        "48": "icons/icon.png"
+    },
+    "permissions": [
+        "activeTab"
+    ],
+    "browser_action": {
+        "default_icon": {
+            "48": "icons/icon.png"
+        },
+        "default_title": "Tweet Counter"
+    },
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://*.x.com/*"],
+            "js": ["plugin.js"]
+        }
+    ]
+}
